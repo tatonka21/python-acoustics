@@ -10,6 +10,7 @@ import io
 import re
 
 import pandas as pd
+import math
 
 
 def read_csv_cirrus(filename):  # pylint: disable=too-many-locals
@@ -108,7 +109,7 @@ def read_csv_cirrus(filename):  # pylint: disable=too-many-locals
         delta = data.time.diff().fillna(pd.Timedelta(0.0))
         # Mode and change from ns to s
         int_time = int(delta.mode().astype(int) * 1e-9)
-        if round(int_time, 2) == 0.06:  # Fix for 1/16 s
+        if math.isclose(round(int_time, 2), 0.06, rel_tol=1e-09, abs_tol=0.0):  # Fix for 1/16 s
             int_time = 0.0625
         data.integration_time = int_time
 

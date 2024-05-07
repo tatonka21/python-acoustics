@@ -12,6 +12,7 @@ from scipy import stats
 from acoustics.utils import _is_1d
 from acoustics.signal import bandpass
 from acoustics.bands import (_check_band_type, octave_low, octave_high, third_low, third_high)
+import math
 
 SOUNDSPEED = 343.0
 
@@ -205,8 +206,8 @@ def t60_impulse(file_name, bands, rt='t30'):  # pylint: disable=too-many-locals
         # Linear regression
         sch_init = sch_db[np.abs(sch_db - init).argmin()]
         sch_end = sch_db[np.abs(sch_db - end).argmin()]
-        init_sample = np.where(sch_db == sch_init)[0][0]
-        end_sample = np.where(sch_db == sch_end)[0][0]
+        init_sample = np.where(math.isclose(sch_db, sch_init, rel_tol=1e-09, abs_tol=0.0))[0][0]
+        end_sample = np.where(math.isclose(sch_db, sch_end, rel_tol=1e-09, abs_tol=0.0))[0][0]
         x = np.arange(init_sample, end_sample + 1) / fs
         y = sch_db[init_sample:end_sample + 1]
         slope, intercept = stats.linregress(x, y)[0:2]
